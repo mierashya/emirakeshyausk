@@ -51,6 +51,11 @@ Route::delete('/siswa/{id}', [BankMiniController::class, 'hapusUser'])->name('ha
 // Hapus transaksi
 Route::delete('/transaksi/{id}', [BankMiniController::class, 'hapusTransaksi'])->name('hapus.transaksi');
 
+Route::post('/transactions/{id}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
+
+Route::post('/transactions/{id}/reject', [TransactionController::class, 'reject'])->name('transactions.reject');
+
+
 
 
 

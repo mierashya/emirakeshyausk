@@ -57,7 +57,7 @@
     <table>
         <thead>
             <tr>
-                <th>No</th>
+                <th>User ID</th>
                 <th>Nama</th>
                 <th>Jenis Transaksi</th>
                 <th>Jumlah</th>
@@ -65,16 +65,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($transactions as $index => $transaction)
+            @foreach ($transactions as $transaction)
             <tr>
-                <td>{{ $index + 1 }}</td>
+                <td>{{ $transaction->user->id ?? '-' }}</td>
                 <td>{{ $transaction->user->name ?? '-' }}</td>
                 <td>{{ ucfirst(str_replace('_', ' ', $transaction->type)) }}</td>
                 <td>Rp {{ number_format($transaction->amount, 0, ',', '.') }}</td>
                 <td>{{ $transaction->created_at->format('Y-m-d') }}</td>
             </tr>
             @endforeach
-        </tbody>
+        </tbody>        
     </table>
 
     <div class="footer">
