@@ -77,51 +77,67 @@
         </div>
 
         <!-- Riwayat Transaksi -->
-        <section id="transaction-history" class="mt-12 bg-white p-6 rounded-xl shadow">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-bold text-gray-800">Riwayat Transaksi</h2>
-                <a href="{{ route('siswa.cetak.transaksi') }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-                    Cetak PDF
-                </a>
-            </div>
+<section id="transaction-history" class="mt-12 bg-white p-6 rounded-xl shadow">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold text-gray-800">Riwayat Transaksi</h2>
+        <a href="{{ route('siswa.cetak.transaksi') }}" class="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500 transition">
+            Cetak PDF
+        </a>        
+    </div>
 
-            @if($transactions->isNotEmpty())
-                <div class="overflow-x-auto">
-                    <table class="w-full border border-gray-300 text-sm text-gray-700">
-                        <thead>
-                            <tr class="bg-gray-200 text-gray-700 font-semibold">
-                                <th class="border px-4 py-2">No</th>
-                                <th class="border px-4 py-2">Tipe</th>
-                                <th class="border px-4 py-2">Jumlah</th>
-                                <th class="border px-4 py-2">Tanggal</th>
-                                <th class="border px-4 py-2">Penerima</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($transactions as $transaction)
-                                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-gray-50' }}">
-                                    <td class="border px-4 py-2">{{ $loop->iteration }}</td>
-                                    <td class="border px-4 py-2">{{ ucfirst($transaction->type) }}</td>
-                                    <td class="border px-4 py-2">Rp{{ number_format($transaction->amount, 0, ',', '.') }}</td>
-                                    <td class="border px-4 py-2">{{ $transaction->created_at->format('d M Y, H:i') }}</td>
-                                    <td class="border px-4 py-2">
-                                        @if($transaction->type == 'transfer' && $transaction->recipient)
-                                            <span class="inline-block bg-blue-500 text-white px-3 py-1 rounded text-xs font-medium">
-                                                {{ $transaction->recipient->name }}
-                                            </span>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <p class="text-center text-gray-500 mt-4">Tidak ada transaksi.</p>
-            @endif
-        </section>
+    @if($transactions->isNotEmpty())
+        <div class="overflow-x-auto">
+            <table class="w-full border border-gray-300 text-sm text-gray-700">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700 font-semibold">
+                        <th class="border px-4 py-2">No</th>
+                        <th class="border px-4 py-2">Tipe</th>
+                        <th class="border px-4 py-2">Jumlah</th>
+                        <th class="border px-4 py-2">Tanggal</th>
+                        <th class="border px-4 py-2">Penerima</th>
+                        <th class="border px-4 py-2">Status</th> <!-- Kolom Status Ditambahkan -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($transactions as $transaction)
+                        <tr class="{{ $loop->odd ? 'bg-white' : 'bg-gray-50' }}">
+                            <td class="border px-4 py-2">{{ $loop->iteration }}</td>
+                            <td class="border px-4 py-2">{{ ucfirst($transaction->type) }}</td>
+                            <td class="border px-4 py-2">Rp{{ number_format($transaction->amount, 0, ',', '.') }}</td>
+                            <td class="border px-4 py-2">{{ $transaction->created_at->format('d M Y, H:i') }}</td>
+                            <td class="border px-4 py-2">
+                                @if($transaction->type == 'transfer' && $transaction->recipient)
+                                    <span class="inline-block bg-blue-500 text-white px-3 py-1 rounded text-xs font-medium">
+                                        {{ $transaction->recipient->name }}
+                                    </span>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td class="border px-4 py-2">
+                                @php
+                                    $status = $transaction->status;
+                                    $badgeColor = match($status) {
+                                        'approved' => 'bg-green-200 text-green-800',
+                                        'pending' => 'bg-yellow-200 text-yellow-800',
+                                        'rejected' => 'bg-red-200 text-red-800',
+                                        default => 'bg-gray-200 text-gray-800',
+                                    };
+                                @endphp
+                                <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $badgeColor }}">
+                                    {{ ucfirst($status) }}
+                                </span>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @else
+        <p class="text-center text-gray-500 mt-4">Tidak ada transaksi.</p>
+    @endif
+</section>
+
     </main>
 
     <!-- Footer -->

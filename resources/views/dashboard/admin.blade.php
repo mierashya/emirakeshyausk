@@ -100,23 +100,24 @@
 </section>
 
     
-    <!-- Riwayat Transaksi -->
+  <!-- Riwayat Transaksi -->
 <section>
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold text-gray-800">Riwayat Transaksi</h2>
-    <a href="{{ route('admin.cetak.transaksi') }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-        Cetak PDF
+    <a href="{{ route('admin.cetak.transaksi') }}" class="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500">
+      Cetak PDF
     </a>
   </div>      
   <div class="bg-white p-6 rounded shadow overflow-x-auto">
     <table class="min-w-full border border-gray-200">
       <thead class="bg-green-200 text-left">
         <tr>
-          <th class="px-4 py-2 border text-center">No</th>
+          <th class="px-4 py-2 border text-center">User ID</th>
           <th class="px-4 py-2 border text-center">Nama</th>
           <th class="px-4 py-2 border text-center">Jenis Transaksi</th>
           <th class="px-4 py-2 border text-center">Jumlah</th>
           <th class="px-4 py-2 border text-center">Tanggal</th>
+          <th class="px-4 py-2 border text-center">Status</th>
           <th class="px-4 py-2 border text-center">Aksi</th>
         </tr>
       </thead>
@@ -129,6 +130,20 @@
             <td class="border px-4 py-2 text-center">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</td>
             <td class="border px-4 py-2 text-center">{{ $transaction->created_at->format('Y-m-d') }}</td>
             <td class="border px-4 py-2 text-center">
+              @php
+                $status = $transaction->status;
+                $badgeColor = match($status) {
+                    'approved' => 'bg-green-200 text-green-800',
+                    'pending' => 'bg-yellow-200 text-yellow-800',
+                    'rejected' => 'bg-red-200 text-red-800',
+                    default => 'bg-gray-200 text-gray-800',
+                };
+              @endphp
+              <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $badgeColor }}">
+                {{ ucfirst($status) }}
+              </span>
+            </td>
+            <td class="border px-4 py-2 text-center">
               <form action="{{ route('admin.hapus.transaksi', $transaction->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')">
                 @csrf
                 @method('DELETE')
@@ -136,13 +151,14 @@
                   Hapus
                 </button>
               </form>
-            </td>                                                             
+            </td>                                 
           </tr>
         @endforeach
       </tbody>
     </table>
   </div>
 </section>
+
 </main>
 
   <!-- Footer -->
